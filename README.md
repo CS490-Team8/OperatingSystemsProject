@@ -6,7 +6,7 @@ setting up JavaFX on your local machine.
 
 https://www.jetbrains.com/help/idea/javafx.html
 
-After downloading the code the steps to enable JavaFX 
+After downloading the code, the steps to enable JavaFX 
 are pretty straight forward:
 
     1. Download the JavaFX SKD

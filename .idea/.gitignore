@@ -28,3 +28,8 @@ hs_err_pid*
 
 *.xml
 *.html
+out/*
+*.bin
+*.lock
+.idea/workspace.xml
+.gradle/*
