@@ -15,7 +15,7 @@ public class SharedCounter {
      */
     public SharedCounter() {
         this.count = 0; //initialize clock at 0
-        this.doRun = true; //initialize flag to true
+        this.doRun = false; //initialize flag to false, don't want to start running until start is selected
     }
 
     /**

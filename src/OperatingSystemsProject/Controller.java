@@ -31,10 +31,10 @@ public class Controller implements Initializable {
 
     //class members
     private SharedCounter globalCounter; //this SharedCounter will keep track of clock cycle time.
-    private ClockThread msgThread1;
+    private ClockThread systemClock;
     private int timeUnit; //variable that holds the user value of time unit from the GUI
     private Thread thread1;
-    private ArrayList<Process> processesReceived = new ArrayList<Process>(); //List of all incoming processes read in from input file
+    public ArrayList<Process> processesReceived = new ArrayList<Process>(); //List of all incoming processes read in from input file
     private ObservableList<Process> processQueue = FXCollections.observableArrayList(); //Array list representing the waiting process queue
 
     /**
@@ -46,23 +46,35 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Scene Initialized"); //debug line
+        //------------------------------------------------------------
         //Read inputs from file
+        //------------------------------------------------------------
         //ProcessParser readInput = new ProcessParser(); //use this line to let the user enter the file path
         ProcessParser readInput = new ProcessParser("src/OperatingSystemsProject/input.txt"); //use this line if file path is known
 
         this.processesReceived = readInput.getProcesses(); //store processes
 
+        //------------------------------------------------------------
         //initialize variables
+        //------------------------------------------------------------
         this.timeUnit= Integer.parseInt(this.timeInput.getText());
         globalCounter = new SharedCounter(); //system wide clock/counter
         this.systemReportDisplay.setText(getSystemReport());
-
+        //------------------------------------------------------------
         //initialize table values
+        //------------------------------------------------------------
         colName.setCellValueFactory(new PropertyValueFactory<Process, SimpleStringProperty>("ProcessId"));
         colTime.setCellValueFactory(new PropertyValueFactory<Process, SimpleIntegerProperty>("ServiceTime"));
         pTable.setItems(processQueue);
 
         this.add2queue(); //check to see if any new items need to be added to the queue
+
+        //------------------------------------------------------------
+        //spin up threads
+        //------------------------------------------------------------
+        systemClock = new ClockThread("M1", globalCounter, "",this.timeUnit, this); // create the threads
+        this.thread1 = new Thread(systemClock);  // create a thread that can run the threads
+        thread1.start();
     }
 
     /**
@@ -83,9 +95,9 @@ public class Controller implements Initializable {
         this.globalCounter.setDoRun(true); //make sure running flag is set to true
         this.systemState.setText("System Running"); //update system state text
 
-        msgThread1 = new ClockThread("M1", globalCounter, "",this.timeUnit, this); // create the threads
-        this.thread1 = new Thread(msgThread1);  // create a thread that can run the threads
-        thread1.start();
+       // msgThread1 = new ClockThread("M1", globalCounter, "",this.timeUnit, this); // create the threads
+      //  this.thread1 = new Thread(msgThread1);  // create a thread that can run the threads
+        //thread1.start();
     }
 
     /**
