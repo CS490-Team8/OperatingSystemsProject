@@ -1,6 +1,7 @@
 package OperatingSystemsProject;
 
 
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -8,10 +9,14 @@ import javafx.beans.property.SimpleStringProperty;
  * Process class will store the details of individual processes
  */
 public class Process {
-    private  SimpleIntegerProperty arrivalTime;
-    private  SimpleStringProperty processId;
-    private  SimpleIntegerProperty serviceTime;
-    private  SimpleIntegerProperty processPriority;
+    private  SimpleIntegerProperty arrivalTime; //arrival time
+    private  SimpleStringProperty processId; //unique name of process
+    private  SimpleIntegerProperty serviceTime; //duration of service time
+    private  SimpleIntegerProperty processPriority; //priority in queue
+    private  SimpleIntegerProperty finishTime; //clock cycle when process finished executing
+    private  SimpleIntegerProperty turnaroundTime; //turnaround time: the elapsed time from when a process arrives in the system to when it finished
+    private SimpleDoubleProperty normalizedTATTime; //normalized turnaround time: the TAT (turnaround time) divided by the service time.
+
 
     /**
      * Constructor that takes in inputs for all the Process fields and sets them to equal the inputs.
@@ -21,6 +26,7 @@ public class Process {
      * @param priority int - process priority
      */
     public Process (Integer a_time, String p_id, Integer s_time, Integer priority){
+        //set class members from arguments
         this.arrivalTime = new SimpleIntegerProperty(a_time);
         this.processId =  new SimpleStringProperty(p_id);
         this.serviceTime = new SimpleIntegerProperty(s_time);
@@ -28,8 +34,29 @@ public class Process {
     }
 
     /**
+     * Overload constructor for a finished process that includes statistical data
+     * @param a_time int - arrival time
+     * @param p_id String - process ID
+     * @param s_time int - service time
+     * @param priority int - process priority
+     * @param finishTime int - clock cycle when process was completed
+     */
+    public Process (Integer a_time, String p_id, Integer s_time, Integer priority, Integer finishTime){
+        //set class members from arguments
+        this.arrivalTime = new SimpleIntegerProperty(a_time);
+        this.processId =  new SimpleStringProperty(p_id);
+        this.serviceTime = new SimpleIntegerProperty(s_time);
+        this.processPriority = new SimpleIntegerProperty(priority);
+        this.finishTime = new SimpleIntegerProperty(finishTime);
+
+        //calculate additional values
+        this.turnaroundTime = new SimpleIntegerProperty(finishTime-a_time);
+        this.normalizedTATTime = new SimpleDoubleProperty((finishTime-a_time)/s_time);
+    }
+
+    /**
      * Getter for arrival time
-     * @return int
+     * @return integer of arrival time
      */
     public int getArrivalTime(){
         return arrivalTime.get();
@@ -37,7 +64,7 @@ public class Process {
 
     /**
      * Setter for arrival time
-     * @param new_time int
+     * @param new_time int to set the time
      */
     public void setArrivalTime(int new_time){
         this.arrivalTime = new SimpleIntegerProperty(new_time);
@@ -99,4 +126,39 @@ public class Process {
     public String toString(){
         return ("Arrival Time: " + this.arrivalTime + ", Process Id: " + this.processId + ", Service Time: " + this.serviceTime + ", Process Priority: " + this.processPriority + "\n");
     }
+
+    /**
+     * getter for finish time
+     * @return int
+     */
+    public int getFinishTime() {
+        return finishTime.get();
+    }
+
+    /**
+     * getter for TAT (turnaround time)
+     * @return int
+     */
+    public int getTurnaround(){
+        return turnaroundTime.get();
+    }
+
+    /**
+     * getter for normalized turnaround time
+     * @return double
+     */
+    public double getnTATTime(){
+        return normalizedTATTime.get();
+    }
+
+    //Don't believe we need these functions
+    /*
+    public SimpleIntegerProperty finishTimeProperty() {
+        return finishTime;
+    }
+
+
+    public void setFinishTime(int finishTime) {
+        this.finishTime.set(finishTime);
+    }*/
 }

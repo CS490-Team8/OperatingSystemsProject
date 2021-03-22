@@ -15,32 +15,34 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
- * Controller spins up threads and controls the GUI
+ * Controller that spins up threads and controls the GUI
  */
 public class Controller implements Initializable {
     //Scene Components
-    @FXML private Label systemState;
-    @FXML private Button start;
-    @FXML private Button stepButton;
-    @FXML private Button pauseButton;
-    @FXML private TextField timeInput;
-    @FXML private TextArea systemReportDisplay;
-    @FXML private TableView<Process> pTable;
-    @FXML public TableColumn<Process, SimpleStringProperty> colName;
-    @FXML public TableColumn<Process, SimpleIntegerProperty> colTime;
+    @FXML    private Label systemState;
+    @FXML    private Button start;
+    @FXML    private Button stepButton;
+    @FXML    private Button pauseButton;
+    @FXML    private TextField timeInput;
+    @FXML    private TextArea systemReportDisplay;
+    @FXML    private TextArea CPUDisplay;
+    @FXML    private TableView<Process> pTable;
+    @FXML    public TableColumn<Process, SimpleStringProperty> colName;
+    @FXML    public TableColumn<Process, SimpleIntegerProperty> colTime;
 
     //class members
     private SharedCounter globalCounter; //this SharedCounter will keep track of clock cycle time.
-    private ClockThread systemClock;
+    private ClockThread systemClock; //Clock thread object that will be used to simulate the system clock
     private int timeUnit; //variable that holds the user value of time unit from the GUI
-    private Thread thread1;
+    private Thread thread1; //thread to run the other threads
     public ArrayList<Process> processesReceived = new ArrayList<Process>(); //List of all incoming processes read in from input file
     private ObservableList<Process> processQueue = FXCollections.observableArrayList(); //Array list representing the waiting process queue
 
     /**
      * Override for abstract method initialize
      * This function is called when the GUI launches, it is responsible for initializing the GUI and necessary variables.
-     * @param location part of the abstract method
+     *
+     * @param location  part of the abstract method
      * @param resources part of the abstract method
      */
     @Override
@@ -48,6 +50,8 @@ public class Controller implements Initializable {
         System.out.println("Scene Initialized"); //debug line
         //------------------------------------------------------------
         //Read inputs from file
+        // **Able to choose to let the user declare a file path or use
+        //   the default one provided in the project structure
         //------------------------------------------------------------
         //ProcessParser readInput = new ProcessParser(); //use this line to let the user enter the file path
         ProcessParser readInput = new ProcessParser("src/OperatingSystemsProject/input.txt"); //use this line if file path is known
@@ -57,9 +61,10 @@ public class Controller implements Initializable {
         //------------------------------------------------------------
         //initialize variables
         //------------------------------------------------------------
-        this.timeUnit= Integer.parseInt(this.timeInput.getText());
+        this.timeUnit = Integer.parseInt(this.timeInput.getText());
         globalCounter = new SharedCounter(); //system wide clock/counter
         this.systemReportDisplay.setText(getSystemReport());
+
         //------------------------------------------------------------
         //initialize table values
         //------------------------------------------------------------
@@ -72,8 +77,11 @@ public class Controller implements Initializable {
         //------------------------------------------------------------
         //spin up threads
         //------------------------------------------------------------
-        systemClock = new ClockThread("M1", globalCounter, "",this.timeUnit, this); // create the threads
-        this.thread1 = new Thread(systemClock);  // create a thread that can run the threads
+        systemClock = new ClockThread("M1", globalCounter, "", this.timeUnit, this); // create the system clock thread
+
+        this.CPUDisplay.setText(systemClock.getCPUReport()); //display the initial CPU report
+
+        this.thread1 = new Thread(systemClock);  // create a thread that can run the other threads
         thread1.start();
     }
 
@@ -81,8 +89,10 @@ public class Controller implements Initializable {
      * This function is generates the system report. This will be displayed on the GUI.
      * @return String containing the system report status
      */
-    private String getSystemReport(){
+    private String getSystemReport() {
         String report = "Clock Cycle: " + this.globalCounter.getCount();
+        report += "\nName\tArrival Time\tService Time\tFinish Time\n";
+        report += globalCounter.printFinishedJobs();
         return report;
     }
 
@@ -90,13 +100,13 @@ public class Controller implements Initializable {
      * This function starts the system clock once the user presses start
      * @param actionEvent mouse click event from the user
      */
-    public void start(ActionEvent actionEvent)  {
+    public void start(ActionEvent actionEvent) {
         //System.out.println("start");//debugging line
         this.globalCounter.setDoRun(true); //make sure running flag is set to true
         this.systemState.setText("System Running"); //update system state text
 
-       // msgThread1 = new ClockThread("M1", globalCounter, "",this.timeUnit, this); // create the threads
-      //  this.thread1 = new Thread(msgThread1);  // create a thread that can run the threads
+        // msgThread1 = new ClockThread("M1", globalCounter, "",this.timeUnit, this); // create the threads
+        //  this.thread1 = new Thread(msgThread1);  // create a thread that can run the threads
         //thread1.start();
     }
 
@@ -122,10 +132,10 @@ public class Controller implements Initializable {
     /**
      * add2queue compares process entry time to clock cycle time to see if a job as "arrived" at the OS
      */
-    private void add2queue(){
-        for(Process p: this.processesReceived){
+    private void add2queue() {
+        for (Process p : this.processesReceived) {
             //check process arrival time vs. system clock time
-            if (this.globalCounter.getCount() == p.getArrivalTime()){
+            if (this.globalCounter.getCount() == p.getArrivalTime()) {
                 System.out.println(p); //debug line
                 processQueue.add(p); //add process to queue
             }
@@ -133,10 +143,25 @@ public class Controller implements Initializable {
     }
 
     /**
+     * removeFromQueue will removed a specified process from the waiting queue
+     * @param removalProcess Process object representing the process to be removed
+     */
+    public void removeFromQueue(Process removalProcess){
+        //loop through stored processes and remove if fount
+        for (Process p : this.processesReceived) {
+            if (removalProcess.getProcessId().equals(p.getProcessId())){
+                processQueue.remove(p);
+            }
+        }
+    }
+
+    /**
      * Increase Clock Cycle will perform the necessary operations each clock cycle
      */
-    public void increaseClockCycle(){
+    public void increaseClockCycle() {
         this.systemReportDisplay.setText(getSystemReport()); //update status report text
+        this.CPUDisplay.setText(systemClock.getCPUReport()); //update CPU report text
         this.add2queue(); //check to see if any new items need to be added to the queue
     }
 }
+

@@ -40,7 +40,7 @@
                 <Font size="13.0" />
             </font>
         </Label>
-        <TextArea layoutX="330.0" layoutY="236.0" prefHeight="158.0" prefWidth="194.0" />
+        <TextArea fx:id="CPUDisplay" layoutX="330.0" layoutY="236.0" prefHeight="158.0" prefWidth="194.0" />
         <TextArea fx:id="systemReportDisplay" layoutX="101.0" layoutY="487.0" prefHeight="118.0" prefWidth="382.0" />
       <Button fx:id="stepButton" layoutX="324.0" layoutY="57.0" mnemonicParsing="false" onAction="#step" prefHeight="33.0" prefWidth="103.0" text="Step Through" />
     </children>
