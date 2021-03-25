@@ -112,7 +112,7 @@ public class Controller implements Initializable {
      */
     private String getSystemReport() {
         String report = "Clock Cycle: " + this.globalCounter.getCount();
-        report += "\nName\tArrival Time\tService Time\tFinish Time\n";
+        //report += "\nName\tArrival Time\tService Time\tFinish Time\n";
         report += globalCounter.printFinishedJobs();
         return report;
     }
