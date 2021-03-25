@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="644.0" prefWidth="583.0" stylesheets="@darktheme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="OperatingSystemsProject.Controller">
+<AnchorPane prefHeight="958.0" prefWidth="599.0" stylesheets="@darktheme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="OperatingSystemsProject.Controller">
     <children>
         <Button fx:id="start" layoutX="74.0" layoutY="57.0" mnemonicParsing="false" onAction="#start" prefHeight="33.0" prefWidth="103.0" text="Start System" />
         <Button fx:id="pauseButton" layoutX="200.0" layoutY="57.0" mnemonicParsing="false" onAction="#pause" prefHeight="33.0" prefWidth="103.0" text="Pause System" />
@@ -43,5 +43,15 @@
         <TextArea fx:id="CPUDisplay" layoutX="330.0" layoutY="236.0" prefHeight="158.0" prefWidth="194.0" />
         <TextArea fx:id="systemReportDisplay" layoutX="101.0" layoutY="487.0" prefHeight="118.0" prefWidth="382.0" />
       <Button fx:id="stepButton" layoutX="324.0" layoutY="57.0" mnemonicParsing="false" onAction="#step" prefHeight="33.0" prefWidth="103.0" text="Step Through" />
+      <TableView fx:id="reportTable" layoutX="74.0" layoutY="656.0" prefHeight="200.0" prefWidth="452.0">
+        <columns>
+          <TableColumn fx:id="processName" prefWidth="75.0" text="Process&#10; Name" />
+          <TableColumn fx:id="arrivalTime" prefWidth="75.0" text="Arrival Time" />
+            <TableColumn fx:id="serviceTime" prefWidth="75.0" text="Service &#10;Time" />
+            <TableColumn fx:id="finishTime" prefWidth="75.0" text="Finish Time" />
+            <TableColumn fx:id="tat" prefWidth="75.0" text="TAT" />
+            <TableColumn fx:id="ntat" prefWidth="75.0" text="nTAT" />
+        </columns>
+      </TableView>
     </children>
 </AnchorPane>

@@ -70,11 +70,11 @@ public class SharedCounter {
      */
     synchronized public String printFinishedJobs(){
         String jobStatus = "\n"; //start with a new line
-
+        /*
         //loop entire list and add information for each process in list
         for (Process p: finishedJobs) {
-            jobStatus += p.getProcessId() +"\t"+p.getArrivalTime()+"\t"+p.getServiceTime()+"\t"+p.getFinishTime()+"\t"+ p.getTurnaround()+"\t"+p.getnTATTime()+"\n";
-        }
+            jobStatus += p.getProcessId() +"\t"+p.getArrivalTime()+"\t"+p.getServiceTime()+"\t"+p.getFinishTime()+"\t"+ p.getTurnaroundTime()+"\t"+p.getNormalizedTATTime()+"\n";
+        }*/
 
         //Add throughput information
         jobStatus +="\n";
@@ -85,5 +85,13 @@ public class SharedCounter {
         }
 
         return jobStatus; //return finalized screen
+    }
+
+    /**
+     * getter for finished jobs array list
+     * @return ArraryList of Finished Processes
+     */
+    public ArrayList<Process> getFinishedJobs() {
+        return finishedJobs;
     }
 }
