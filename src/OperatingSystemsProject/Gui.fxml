@@ -9,39 +9,49 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="644.0" prefWidth="583.0" stylesheets="@darktheme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="OperatingSystemsProject.Controller">
+<AnchorPane prefHeight="665.0" prefWidth="562.0" stylesheets="@darktheme.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="OperatingSystemsProject.Controller">
     <children>
         <Button fx:id="start" layoutX="74.0" layoutY="57.0" mnemonicParsing="false" onAction="#start" prefHeight="33.0" prefWidth="103.0" text="Start System" />
         <Button fx:id="pauseButton" layoutX="200.0" layoutY="57.0" mnemonicParsing="false" onAction="#pause" prefHeight="33.0" prefWidth="103.0" text="Pause System" />
-        <Label fx:id="systemState" layoutX="74.0" layoutY="104.0" prefHeight="25.0" prefWidth="133.0" text="System Ready">
+        <Label fx:id="systemState" layoutX="74.0" layoutY="14.0" prefHeight="35.0" prefWidth="194.0" text="System Ready">
             <font>
-                <Font size="13.0" />
+                <Font size="24.0" />
             </font>
         </Label>
-        <Label layoutX="59.0" layoutY="192.0" text="Waiting Process Queue">
+        <Label layoutX="74.0" layoutY="115.0" text="Waiting Process Queue">
             <font>
-                <Font size="13.0" />
+                <Font size="18.0" />
             </font>
         </Label>
-        <TableView fx:id="pTable" layoutX="58.0" layoutY="211.0" prefHeight="237.0" prefWidth="232.0">
+        <TableView fx:id="pTable" layoutX="55.0" layoutY="142.0" prefHeight="237.0" prefWidth="232.0">
             <columns>
                 <TableColumn fx:id="colName" prefWidth="118.0" text="Process Name" />
                 <TableColumn fx:id="colTime" prefWidth="113.0" text="Service Time" />
             </columns>
         </TableView>
-        <Label layoutX="324.0" layoutY="142.0" prefHeight="19.0" prefWidth="81.0" text="1 time unit =">
+        <Label layoutX="324.0" layoutY="64.0" prefHeight="19.0" prefWidth="81.0" text="1 time unit =">
             <font>
                 <Font size="13.0" />
             </font>
         </Label>
-        <TextField fx:id="timeInput" layoutX="408.0" layoutY="139.0" prefHeight="25.0" prefWidth="60.0" text="1000" />
-        <Label layoutX="473.0" layoutY="142.0" prefHeight="17.0" prefWidth="22.0" text="ms">
+        <TextField fx:id="timeInput" layoutX="408.0" layoutY="61.0" prefHeight="25.0" prefWidth="60.0" text="1000" />
+        <Label layoutX="473.0" layoutY="64.0" prefHeight="17.0" prefWidth="22.0" text="ms">
             <font>
                 <Font size="13.0" />
             </font>
         </Label>
-        <TextArea fx:id="CPUDisplay" layoutX="330.0" layoutY="236.0" prefHeight="158.0" prefWidth="194.0" />
-        <TextArea fx:id="systemReportDisplay" layoutX="101.0" layoutY="487.0" prefHeight="118.0" prefWidth="382.0" />
-      <Button fx:id="stepButton" layoutX="324.0" layoutY="57.0" mnemonicParsing="false" onAction="#step" prefHeight="33.0" prefWidth="103.0" text="Step Through" />
+        <TextArea fx:id="CPUDisplay" editable="false" layoutX="313.0" layoutY="142.0" prefHeight="158.0" prefWidth="194.0" />
+        <TextArea fx:id="systemReportDisplay" editable="false" layoutX="55.0" layoutY="604.0" prefHeight="47.0" prefWidth="452.0" />
+      <Button fx:id="stepButton" layoutX="303.0" layoutY="15.0" mnemonicParsing="false" onAction="#step" prefHeight="33.0" prefWidth="103.0" text="Step Through" />
+      <TableView fx:id="reportTable" layoutX="55.0" layoutY="395.0" prefHeight="200.0" prefWidth="452.0">
+        <columns>
+          <TableColumn fx:id="processName" prefWidth="75.0" text="Process&#10; Name" />
+          <TableColumn fx:id="arrivalTime" prefWidth="75.0" text="Arrival Time" />
+            <TableColumn fx:id="serviceTime" prefWidth="75.0" text="Service &#10;Time" />
+            <TableColumn fx:id="finishTime" prefWidth="75.0" text="Finish Time" />
+            <TableColumn fx:id="tat" prefWidth="75.0" text="TAT" />
+            <TableColumn fx:id="ntat" prefWidth="75.0" text="nTAT" />
+        </columns>
+      </TableView>
     </children>
 </AnchorPane>

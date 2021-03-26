@@ -69,21 +69,31 @@ public class SharedCounter {
      * @return String
      */
     synchronized public String printFinishedJobs(){
+        /*
         String jobStatus = "\n"; //start with a new line
-
         //loop entire list and add information for each process in list
         for (Process p: finishedJobs) {
-            jobStatus += p.getProcessId() +"\t"+p.getArrivalTime()+"\t"+p.getServiceTime()+"\t"+p.getFinishTime()+"\t"+ p.getTurnaround()+"\t"+p.getnTATTime()+"\n";
-        }
+            jobStatus += p.getProcessId() +"\t"+p.getArrivalTime()+"\t"+p.getServiceTime()+"\t"+p.getFinishTime()+"\t"+ p.getTurnaroundTime()+"\t"+p.getNormalizedTATTime()+"\n";
+        }*/
 
         //Add throughput information
-        jobStatus +="\n";
+        String jobStatus ="\n";
         if(count > 0) { //make sure we do not divide by zero
-            jobStatus += "Current Throughput: " + ((double)finishedJobs.size() / (double)count) + " process/unit of time";
+            double thruPut = ((double)finishedJobs.size() / (double)count);
+            String strDouble = String.format("%.3f", thruPut); //format to 3 decimal places
+            jobStatus += "Current Throughput: " + strDouble + " process/unit of time";
         }else{
             jobStatus += "Current Throughput: N/A";
         }
 
         return jobStatus; //return finalized screen
+    }
+
+    /**
+     * getter for finished jobs array list
+     * @return ArraryList of Finished Processes
+     */
+    public ArrayList<Process> getFinishedJobs() {
+        return finishedJobs;
     }
 }

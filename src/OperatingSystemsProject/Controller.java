@@ -1,5 +1,6 @@
 package OperatingSystemsProject;
 
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -29,14 +30,23 @@ public class Controller implements Initializable {
     @FXML    private TableView<Process> pTable;
     @FXML    public TableColumn<Process, SimpleStringProperty> colName;
     @FXML    public TableColumn<Process, SimpleIntegerProperty> colTime;
+    @FXML    private TableView<Process> reportTable;
+    @FXML    private TableColumn<Process, SimpleStringProperty> processName;
+    @FXML    private TableColumn<Process, SimpleIntegerProperty> arrivalTime;
+    @FXML    private TableColumn<Process, SimpleIntegerProperty> serviceTime;
+    @FXML    private TableColumn<Process, SimpleIntegerProperty> finishTime;
+    @FXML    private TableColumn<Process, SimpleIntegerProperty> tat;
+    @FXML    private TableColumn<Process, SimpleDoubleProperty> ntat;
+
 
     //class members
     private SharedCounter globalCounter; //this SharedCounter will keep track of clock cycle time.
     private ClockThread systemClock; //Clock thread object that will be used to simulate the system clock
     private int timeUnit; //variable that holds the user value of time unit from the GUI
     private Thread thread1; //thread to run the other threads
-    public ArrayList<Process> processesReceived = new ArrayList<Process>(); //List of all incoming processes read in from input file
+    public ArrayList<Process> processesReceived = new ArrayList<Process>();
     private ObservableList<Process> processQueue = FXCollections.observableArrayList(); //Array list representing the waiting process queue
+    private ObservableList<Process> finishedJobs = FXCollections.observableArrayList(); //list of finished jobs
 
     /**
      * Override for abstract method initialize
@@ -57,6 +67,7 @@ public class Controller implements Initializable {
         ProcessParser readInput = new ProcessParser("src/OperatingSystemsProject/input.txt"); //use this line if file path is known
 
         this.processesReceived = readInput.getProcesses(); //store processes
+        this.stepButton.setVisible(false); //not using this button, was for initial debugging use only
 
         //------------------------------------------------------------
         //initialize variables
@@ -65,12 +76,22 @@ public class Controller implements Initializable {
         globalCounter = new SharedCounter(); //system wide clock/counter
         this.systemReportDisplay.setText(getSystemReport());
 
+        this.finishedJobs = FXCollections.observableArrayList(globalCounter.getFinishedJobs()); //store processes
+        this.pauseButton.setDisable(true); //disable pause button before program has started
         //------------------------------------------------------------
         //initialize table values
         //------------------------------------------------------------
         colName.setCellValueFactory(new PropertyValueFactory<Process, SimpleStringProperty>("ProcessId"));
         colTime.setCellValueFactory(new PropertyValueFactory<Process, SimpleIntegerProperty>("ServiceTime"));
         pTable.setItems(processQueue);
+
+        processName.setCellValueFactory(new PropertyValueFactory<Process, SimpleStringProperty>("ProcessId"));
+        arrivalTime.setCellValueFactory(new PropertyValueFactory<Process, SimpleIntegerProperty>("ArrivalTime"));
+        serviceTime.setCellValueFactory(new PropertyValueFactory<Process, SimpleIntegerProperty>("ServiceTime"));
+        finishTime.setCellValueFactory(new PropertyValueFactory<Process, SimpleIntegerProperty>("FinishTime"));
+        tat.setCellValueFactory(new PropertyValueFactory<Process, SimpleIntegerProperty>("TurnaroundTime"));
+        ntat.setCellValueFactory(new PropertyValueFactory<Process, SimpleDoubleProperty>("NormalizedTATTime"));
+        reportTable.setItems(this.finishedJobs);
 
         this.add2queue(); //check to see if any new items need to be added to the queue
 
@@ -91,7 +112,7 @@ public class Controller implements Initializable {
      */
     private String getSystemReport() {
         String report = "Clock Cycle: " + this.globalCounter.getCount();
-        report += "\nName\tArrival Time\tService Time\tFinish Time\n";
+        //report += "\nName\tArrival Time\tService Time\tFinish Time\n";
         report += globalCounter.printFinishedJobs();
         return report;
     }
@@ -102,12 +123,14 @@ public class Controller implements Initializable {
      */
     public void start(ActionEvent actionEvent) {
         //System.out.println("start");//debugging line
+        this.systemClock.setMyTime(Integer.parseInt(this.timeInput.getText()));
         this.globalCounter.setDoRun(true); //make sure running flag is set to true
         this.systemState.setText("System Running"); //update system state text
 
-        // msgThread1 = new ClockThread("M1", globalCounter, "",this.timeUnit, this); // create the threads
-        //  this.thread1 = new Thread(msgThread1);  // create a thread that can run the threads
-        //thread1.start();
+        //Disable or enable certain input fields
+        this.timeInput.setDisable(true); //disable time input
+        this.start.setDisable(true); //disable start button while program is running
+        this.pauseButton.setDisable(false); //enable pause button while program is running
     }
 
     /**
@@ -115,7 +138,11 @@ public class Controller implements Initializable {
      * @param actionEvent mouse click event from the user
      */
     public void pause(ActionEvent actionEvent) {
-        System.out.println("pausing"); //debug line
+        //System.out.println("pausing"); //debug line
+        this.timeInput.setDisable(false); //enable time input
+        this.start.setDisable(false); //enable start button while program is running
+        this.pauseButton.setDisable(true); //disable pause button while program is running
+
         this.globalCounter.setDoRun(false); //set the flag in the shared counter to indicate to stop the system clock
         this.systemState.setText("System Paused"); //update text on GUI
     }
@@ -162,6 +189,10 @@ public class Controller implements Initializable {
         this.systemReportDisplay.setText(getSystemReport()); //update status report text
         this.CPUDisplay.setText(systemClock.getCPUReport()); //update CPU report text
         this.add2queue(); //check to see if any new items need to be added to the queue
+        this.finishedJobs = FXCollections.observableArrayList(globalCounter.getFinishedJobs()); //store processes
+        reportTable.setItems(this.finishedJobs);
+        //System.out.println("Updated finished log" + finishedJobs); //debug line
+
     }
 }
 

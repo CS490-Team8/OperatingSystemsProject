@@ -139,7 +139,7 @@ public class Process {
      * getter for TAT (turnaround time)
      * @return int
      */
-    public int getTurnaround(){
+    public int getTurnaroundTime(){
         return turnaroundTime.get();
     }
 
@@ -147,18 +147,7 @@ public class Process {
      * getter for normalized turnaround time
      * @return double
      */
-    public double getnTATTime(){
+    public double getNormalizedTATTime(){
         return normalizedTATTime.get();
     }
-
-    //Don't believe we need these functions
-    /*
-    public SimpleIntegerProperty finishTimeProperty() {
-        return finishTime;
-    }
-
-
-    public void setFinishTime(int finishTime) {
-        this.finishTime.set(finishTime);
-    }*/
 }
